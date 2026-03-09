@@ -399,6 +399,13 @@ async function handleExcelUploadForPO(e) {
             date: headerData.poDate || app.headerData.date
         });
 
+        // Sync form fields with updated app.headerData
+        document.getElementById('vendor').value = app.headerData.vendor;
+        document.getElementById('vendorAddress').value = app.headerData.vendorAddress;
+        document.getElementById('style').value = app.headerData.style;
+        document.getElementById('color').value = app.headerData.color;
+        document.getElementById('headerDate').value = app.headerData.date;
+
         // Validate
         const validation = app.validateExcelData(
             app.headerData.style, 
