@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carton Slip & Packing List Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1>📦 Carton Slip & Packing List Generator</h1>
+                    <p>Offline application for generating packing documentation</p>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="exportJsonBtn" class="btn btn-info">💾 Export Data (JSON)</button>
+                    <button id="importJsonBtn" class="btn btn-info">📂 Import Data (JSON)</button>
+                    <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+                    <button id="resetSessionBtn" class="btn btn-danger">🔄 Reset Session</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Disclaimer Banner - Hide on Print -->
+        <div id="disclaimerBanner" class="no-print" style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 12px 15px; margin-bottom: 20px; font-size: 13px; color: #1565c0; line-height: 1.6;">
+            📚 This is a BETA software created as a learning project for educational purposes. No warranty or liability is provided. You may use it for your own work, but not copy, share, redistribute, sell, or use it commercially. All rights remain with the creator.
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="step1">Step 1: Header Data & Purchase Orders</button>
+            <button class="tab-button" data-tab="step3">Step 2: Summary</button>
+        </div>
+
+        <!-- STEP 1 & STEP 2: HEADER DATA & PURCHASE ORDERS (MERGED) -->
+        <div id="step1" class="tab-content active">
+            <h2>Step 1: Header Data & Purchase Orders</h2>
+            <p class="description">Enter header information, then add and allocate purchase orders to cartons.</p>
+
+            <!-- SECTION A: HEADER DATA -->
+            <div class="form-section">
+                <h3 style="font-size: 16px; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 10px;">📋 Header Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vendor">Vendor</label>
+                        <input type="text" id="vendor" placeholder="" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="buyer">Buyer <span style="color: red;">*</span></label>
+                        <input type="text" id="buyer" placeholder="e.g., Mr. Amit Gupta" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vendorAddress">Vendor Address</label>
+                        <textarea id="vendorAddress" rows="3" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="brand">Brand <span style="color: red;">*</span></label>
+                        <input type="text" id="brand" placeholder="e.g., Babyhug" value="Babyhug" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="style">Style <span style="color: red;">*</span></label>
+                        <input type="text" id="style" placeholder="e.g., SS26PJITFKNP1183" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="season">Season</label>
+                        <input type="text" id="season" placeholder="Auto-filled from Style" disabled>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="color">Color <span style="color: red;">*</span></label>
+                        <input type="text" id="color" placeholder="e.g., PINK" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mrp">MRP</label>
+                        <input type="text" id="mrp" placeholder="e.g., 449.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="headerDate">Date</label>
+                        <input type="date" id="headerDate">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION B: PURCHASE ORDERS & CARTON ALLOCATION -->
+            <div class="form-section">
+                <h3 style="font-size: 16px; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #28a745; padding-bottom: 10px;">📦 Purchase Orders & Carton Allocation</h3>
+
+                <div class="button-group">
+                    <button id="uploadExcelStep2" class="btn btn-primary">📤 Upload Excel for New PO</button>
+                    <input type="file" id="excelFileInputStep2" accept=".xls,.xlsx" style="display:none;">
+                    <button id="addPoBtn" class="btn btn-primary">+ Add New PO Manually</button>
+                </div>
+
+                <div id="poList"></div>
+            </div>
+
+            <div class="button-group">
+                <button id="step1Continue" class="btn btn-success">Continue to Step 2 (Summary) →</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: PACKING LIST SUMMARY (RENAMED) -->
+        <div id="step3" class="tab-content">
+            <h2>Step 2: Packing List Summary</h2>
+            <p class="description">View overall summary across all purchase orders.</p>
+
+            <div id="summaryContent"></div>
+
+            <div class="button-group">
+                <button id="exportSummaryPdfBtn" class="btn btn-info">📥 Export to PDF</button>
+                <button id="printSummaryBtn" class="btn btn-primary">🖨️ Print Summary</button>
+                <button id="step3ToPreviousBtn" class="btn btn-secondary">← Back to Step 1</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for PO Details -->
+    <div id="poModal" class="modal">
+        <div class="modal-content wide">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle">Purchase Order Details</h3>
+            <form id="poForm">
+                <input type="hidden" id="poIndex">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveredTo">City Delivered To</label>
+                        <input type="text" id="deliveredTo" placeholder="e.g., KOLKATA-2">
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryAddress">Delivery Address</label>
+                        <input type="text" id="deliveryAddress" placeholder="Full delivery address">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="poNumber">PO Number</label>
+                        <input type="text" id="poNumber" placeholder="e.g., pin46251222ylfa093">
+                    </div>
+                    <div class="form-group">
+                        <label for="invoiceNumber">Invoice Number</label>
+                        <input type="text" id="invoiceNumber" placeholder="e.g., INV/2025-28/">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="poDate">Date</label>
+                        <input type="date" id="poDate">
+                    </div>
+                </div>
+
+                <h4>Item Details</h4>
+                <div id="itemsTable">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>FCID</th>
+                                <th>Size</th>
+                                <th>Billed Qty</th>
+                                <th>Free Qty</th>
+                                <th>Total Qty</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="addItemBtn" class="btn btn-secondary">+ Add Item</button>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Save PO</button>
+                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Carton Allocation -->
+    <div id="cartonModal" class="modal">
+        <div class="modal-content wide">
+            <span class="close">&times;</span>
+            <h3>Allocate Items to Cartons - <span id="cartonPoInfo"></span></h3>
+
+            <div class="addresses-section">
+                <h4>Addresses for Carton Slips</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="toAddress">To Address</label>
+                        <textarea id="toAddress" rows="4" placeholder="Delivery address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fromAddress">From Address</label>
+                        <textarea id="fromAddress" rows="4" placeholder="Vendor address"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cartonsContainer"></div>
+
+            <div class="carton-controls">
+                <button type="button" id="addCartonBtn" class="btn btn-success">+ Add Carton Box</button>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="generateAllBtn" class="btn btn-primary">📋 Generate Documents</button>
+                <button type="button" id="closeCartonModalBtn" class="btn btn-secondary">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing Carton Slips -->
+    <div id="cartonSlipsModal" class="modal">
+        <div class="modal-content wide">
+            <span class="close">&times;</span>
+            <h3>Carton Slips</h3>
+            <div class="button-group">
+                <button type="button" id="exportCartonSlipsPdfBtn" class="btn btn-info">📥 Export PDF</button>
+                <button type="button" id="printCartonSlipsBtn" class="btn btn-primary">🖨️ Print All</button>
+                <button type="button" id="nextToPackingListBtn" class="btn btn-secondary">Next: Packing List →</button>
+            </div>
+            <div id="cartonSlipsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing Packing List -->
+    <div id="packingListModal" class="modal">
+        <div class="modal-content wide">
+            <span class="close">&times;</span>
+            <h3>Packing List</h3>
+            <div class="button-group">
+                <button type="button" id="backToCartonSlipsBtn" class="btn btn-secondary">← Back: Carton Slips</button>
+                <button type="button" id="exportPackingListPdfBtn" class="btn btn-info">📥 Export PDF</button>
+                <button type="button" id="printPackingListBtn" class="btn btn-primary">🖨️ Print</button>
+            </div>
+            <div id="packingListContainer"></div>
+        </div>
+    </div>
+
+    <!-- File Parsing Progress Modal -->
+    <div id="parsingModal" class="modal">
+        <div class="modal-content" style="max-width: 650px; text-align: center; padding: 40px 30px;">
+            <h3 style="margin-top: 0; color: #3498db; font-size: 24px; margin-bottom: 30px;">📊 Processing File</h3>
+            
+            <div style="display: flex; justify-content: space-around; align-items: center; margin: 40px 0 50px 0; gap: 15px;">
+                <!-- Reading Stage -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+                    <div style="font-size: 36px; animation: pulse 1.5s ease-in-out infinite;">📁</div>
+                    <div style="font-size: 13px; font-weight: 600; color: #333;">Reading</div>
+                    <div style="font-size: 11px; color: #999;">File Data</div>
+                </div>
+                
+                <!-- Arrow -->
+                <div style="color: #3498db; font-size: 24px; margin-bottom: 20px;">→</div>
+                
+                <!-- Parsing Stage -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+                    <div style="font-size: 36px; animation: spin 1s linear infinite;">⚙️</div>
+                    <div style="font-size: 13px; font-weight: 600; color: #333;">Parsing</div>
+                    <div style="font-size: 11px; color: #999;">Data</div>
+                </div>
+                
+                <!-- Arrow -->
+                <div style="color: #3498db; font-size: 24px; margin-bottom: 20px;">→</div>
+                
+                <!-- Complete Stage -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+                    <div style="font-size: 36px; animation: bounce 1.5s ease-in-out infinite;">✅</div>
+                    <div style="font-size: 13px; font-weight: 600; color: #333;">Complete</div>
+                    <div style="font-size: 11px; color: #999;">Ready</div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar Container -->
+            <div style="background: #e8e8e8; border-radius: 12px; height: 12px; margin: 30px 0; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                <div id="parsingProgressBar" style="background: linear-gradient(90deg, #3498db, #2ecc71); height: 100%; width: 0%; transition: width 0.4s ease; border-radius: 12px; box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);"></div>
+            </div>
+            
+            <!-- Status Text -->
+            <div style="margin: 30px 0;">
+                <p style="margin: 8px 0; font-size: 15px; font-weight: 600; color: #333;">
+                    <span id="parsingStatus">Initializing...</span>
+                </p>
+                <p style="margin: 8px 0; font-size: 14px; color: #666;">
+                    <span id="parsingItemCount">0</span> items found
+                </p>
+            </div>
+            
+            <!-- Loading Message -->
+            <p style="margin: 20px 0 0 0; font-size: 12px; color: #999; font-style: italic;">
+                This may take a few moments...
+            </p>
+        </div>
+    </div>
+
+    <!-- Reset Session Confirmation Modal -->
+    <div id="resetConfirmModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <h3 style="margin-top: 0; color: #e74c3c;">⚠️ Reset Session</h3>
+            <p id="resetConfirmMessage" style="font-size: 16px; line-height: 1.6; color: #333;">
+                Are you sure you want to reset the session?
+            </p>
+            <div class="button-group" style="justify-content: flex-end; gap: 10px;">
+                <button type="button" id="resetCancelBtn" class="btn btn-secondary">❌ Cancel</button>
+                <button type="button" id="resetExportBtn" class="btn btn-success">💾 Export & Reset</button>
+                <button type="button" id="resetWithoutExportBtn" class="btn btn-danger">🔄 Reset Without Export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beta Software Disclaimer Modal -->
+    <div id="disclaimerModal" class="modal">
+        <div class="modal-content" style="max-width: 700px; max-height: 85vh; overflow-y: auto;">
+            <h2 style="margin-top: 0; color: #e74c3c; text-align: center;">⚠️ BETA SOFTWARE - DISCLAIMER</h2>
+            
+            <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                <p style="margin: 0; font-weight: 600; color: #1565c0;">📚 EDUCATIONAL & BETA PROJECT</p>
+                <p style="margin: 8px 0 0 0; font-size: 12px; color: #1565c0;">This is a learning project. No warranty or liability is provided. You may use it for your own work only.</p>
+            </div>
+
+            <div style="background: #fff3cd; border-left: 4px solid #f39c12; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                <p style="margin: 0; font-weight: 600; color: #856404;">⚠️ RESTRICTIONS: Do not copy, share, redistribute, sell, or use commercially. All rights remain with the creator.</p>
+            </div>
+
+            <div style="font-size: 13px; line-height: 1.7; color: #333;">
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #2c3e50;">1. LICENSE GRANT</h4>
+                <p>This software is provided as BETA software for personal and educational use only. You may use it for your own work but not for any commercial purpose. All rights remain with the creator.</p>
+
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #2c3e50;">2. BETA STATUS & NO WARRANTY</h4>
+                <p>This software is in BETA and may contain bugs, errors, and defects. No warranty or liability is provided. The software is provided "AS IS" without any warranties, express or implied.</p>
+
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #2c3e50;">3. LIMITATION OF LIABILITY</h4>
+                <p>The creator is not liable for any damages, data loss, or consequences from using this software.</p>
+
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #2c3e50;">4. RESTRICTIONS</h4>
+                <p style="margin-bottom: 10px;">You may NOT:</p>
+                <ul style="margin: 0 0 10px 20px; padding: 0;">
+                    <li>Copy, share, or redistribute this software</li>
+                    <li>Modify or create derivative works</li>
+                    <li>Sell or use it commercially</li>
+                    <li>Share with unauthorized users</li>
+                    <li>Reverse engineer or decompile</li>
+                </ul>
+
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #2c3e50;">5. INTELLECTUAL PROPERTY</h4>
+                <p>All rights remain with the creator. This is a personal educational project shared for learning purposes only.</p>
+
+
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #2c3e50;">6. DATA & SECURITY</h4>
+                <p style="margin-bottom: 10px;">You are responsible for:</p>
+                <ul style="margin: 0 0 10px 20px; padding: 0;">
+                    <li>Backing up all data before using this beta software</li>
+                    <li>Protecting access to this software and any credentials</li>
+                    <li>Reporting security vulnerabilities immediately</li>
+                    <li>Compliance with all applicable laws and regulations</li>
+                </ul>
+
+                <h4 style="margin-top: 20px; margin-bottom: 10px; color: #2c3e50;">7. TERMINATION</h4>
+                <p>This license may be terminated immediately upon notice if you violate any terms. Upon termination, you must cease all use and destroy all copies.</p>
+
+                <p style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 12px; color: #666;">
+                    By clicking "Accept & Continue", you acknowledge that you have read, understood, and agree to be bound by these terms and conditions.
+                </p>
+            </div>
+
+            <div class="button-group" style="justify-content: center; gap: 15px; margin-top: 30px;">
+                <button type="button" id="disclaimerDeclineBtn" class="btn btn-danger">❌ Decline & Exit</button>
+                <button type="button" id="disclaimerAcceptBtn" class="btn btn-success">✅ Accept & Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Hide on Print -->
+    <footer id="appFooter" class="no-print">
+        Created by: arunkrajan.dev@gmail.com
+    </footer>
+
+    <script src="xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="data-model.js"></script>
+    <script src="excel-parser.js"></script>
+    <script src="ui-renderer.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

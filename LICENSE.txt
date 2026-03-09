@@ -1,0 +1,68 @@
+BETA SOFTWARE LICENSE & DISCLAIMER
+
+EDUCATIONAL & NON-COMMERCIAL PROJECT
+This software is created as a learning project with no commercial value.
+It is provided for educational purposes and personal use only.
+
+IMPORTANT: This is BETA software. No warranty or liability is provided.
+
+1. LICENSE GRANT
+This software is provided as BETA/PRE-RELEASE software for personal and educational use.
+You may use it for your own work only. No commercial use or profit is permitted.
+All rights remain with the creator.
+
+2. BETA STATUS & NO WARRANTY
+This software is in BETA and may contain bugs, errors, and defects. The software 
+is provided "AS IS" without any warranties, express or implied, including but not 
+limited to warranties of merchantability, fitness for a particular purpose, or 
+non-infringement.
+
+3. LIMITATION OF LIABILITY
+IN NO EVENT SHALL THE DEVELOPERS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, 
+CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF DATA, REVENUE, OR PROFITS, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+4. NO REDISTRIBUTION
+You may NOT:
+- Redistribute, share, or provide copies to third parties
+- Sublicense, sell, lease, or loan this software
+- Share access credentials or accounts with unauthorized users
+- Reverse engineer, decompile, or attempt to derive source code
+- Use this software for any commercial purpose without written consent
+- Create derivative works or modifications for external use
+
+5. AUTHORIZED USE ONLY
+This software is authorized for use only by:
+- The licensed organization/individual
+- Employees of the licensed organization acting within their employment
+- Users explicitly authorized in writing by the software provider
+
+Unauthorized access, use, or sharing is strictly prohibited and may result in 
+legal action.
+
+6. DATA & SECURITY
+You are responsible for:
+- Backing up all data before using this beta software
+- Protecting access to this software and any credentials
+- Reporting security vulnerabilities immediately
+- Compliance with all applicable laws and regulations
+
+7. TERMINATION
+This license may be terminated immediately upon notice if you violate any terms. 
+Upon termination, you must cease all use and destroy all copies.
+
+8. BETA FEEDBACK
+By using this software, you agree that any feedback, suggestions, or data you 
+provide may be used by the developers without compensation or attribution.
+
+9. SEVERABILITY
+If any provision is invalid, all other provisions remain in effect.
+
+10. GOVERNING LAW
+This license is governed by applicable laws in your jurisdiction.
+
+---
+By using this software, you acknowledge that you have read, understood, and 
+agree to be bound by these terms and conditions.
+
+Last Updated: March 8, 2026
