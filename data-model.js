@@ -26,6 +26,29 @@ class PackingApp {
 
         // Carton slip addresses
         this.cartonAddresses = {}; // { poIndex: { toAddress, fromAddress } }
+
+        // Summary details data (Step 3)
+        this.summaryDetails = {
+            gptResult: '',
+            gptFailureReason: '',
+            sealerSample: '',
+            notes: ''
+        };
+    }
+
+    /**
+     * Update summary details
+     */
+    updateSummaryDetails(data) {
+        this.summaryDetails = { ...this.summaryDetails, ...data };
+        this.saveToLocalStorage();
+    }
+
+    /**
+     * Get summary details
+     */
+    getSummaryDetails() {
+        return this.summaryDetails;
     }
 
     /**

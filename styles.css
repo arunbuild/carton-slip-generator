@@ -849,6 +849,56 @@ textarea {
     padding: 4px 2px;
 }
 
+/* ============================================
+   SUMMARY EDITABLE INPUTS
+   ============================================ */
+
+.summary-edit-input {
+    width: 95%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+}
+
+.summary-edit-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+    background-color: #fffbf0;
+}
+
+textarea.summary-edit-input {
+    width: 98%;
+    height: 60px;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+    line-height: 1.4;
+}
+
+@media print {
+    .summary-edit-input {
+        border: none;
+        background: white;
+        font-size: 11pt;
+        padding: 2px;
+    }
+    
+    .summary-edit-input:focus {
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
+    
+    textarea.summary-edit-input {
+        height: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow: visible;
+    }
+}
+
 .image-upload-area {
     position: relative;
     width: 100%;
