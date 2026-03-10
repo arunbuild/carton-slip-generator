@@ -288,58 +288,71 @@ class UIRenderer {
             
             html += `
                 <div class="carton-slip">
-                    <div class="slip-title">CARTON SLIP-${po.deliveredTo}</div>
+                    <div style="text-align: center; font-family: Arial, Verdana, sans-serif; font-size: 22pt; font-weight: bold; margin-bottom: 15px;">CARTON SLIP - GGN</div>
 
-                    <div class="slip-header-info">
-                        <div class="slip-header-item">
-                            <span class="slip-header-label">VENDOR NAME:</span>
-                            <span>${app.headerData.vendor}</span>
-                        </div>
-                        <div class="slip-header-item">
-                            <span class="slip-header-label">P O NO:</span>
-                            <span>${po.poNumber}</span>
-                        </div>
-                        <div class="slip-header-item">
-                            <span class="slip-header-label">INVOICE NO:</span>
-                            <span>${po.invoiceNumber}</span>
-                        </div>
-                        <div class="slip-header-item">
-                            <span class="slip-header-label">STYLE CODE/EAN CODE:</span>
-                            <span>${app.headerData.style}</span>
-                        </div>
-                        <div class="slip-header-item">
-                            <span class="slip-header-label">QTY:</span>
-                            <span>${totalQty}</span>
-                        </div>
-                        <div class="slip-header-item">
-                            <span class="slip-header-label">COLOR:</span>
-                            <span>${app.headerData.color}</span>
-                        </div>
-                        <div class="slip-header-item">
-                            <span class="slip-header-label">DATE:</span>
-                            <span>${po.date}</span>
-                        </div>
-                    </div>
+                    <table class="slip-header-info" style="width: 100%; margin-bottom: 15px; border-collapse: collapse; table-layout: fixed; font-family: Arial, Verdana, sans-serif;">
+                        <colgroup>
+                            <col style="width: 20%;">
+                            <col style="width: 45%;">
+                            <col style="width: 15%;">
+                            <col style="width: 20%;">
+                        </colgroup>
+                        <tbody>
+                            <!-- Row 1: VENDOR NAME | (empty) | INVOICE NO | (value) -->
+                            <tr>
+                                <td style="padding: 6px; font-size: 11pt; font-weight: bold; color: #333; vertical-align: top;">VENDOR NAME</td>
+                                <td style="padding: 6px; font-size: 14pt; font-weight: bold; color: #000; vertical-align: top; line-height: 1.3;">${app.headerData.vendor}</td>
+                                <td style="padding: 6px; font-size: 11pt; font-weight: bold; color: #333; vertical-align: top;">INVOICE NO</td>
+                                <td style="padding: 6px; font-size: 14pt; font-weight: bold; color: #000; vertical-align: top;">${po.invoiceNumber}</td>
+                            </tr>
+                            <!-- Row 2: STYLE/EAN | (empty) | DATE | (value) -->
+                            <tr>
+                                <td style="padding: 6px; font-size: 11pt; font-weight: bold; color: #333; vertical-align: top;">STYLE/EAN CODE</td>
+                                <td style="padding: 6px; font-size: 14pt; font-weight: bold; color: #000; vertical-align: top; line-height: 1.3;">${app.headerData.style}</td>
+                                <td style="padding: 6px; font-size: 11pt; font-weight: bold; color: #333; vertical-align: top;">DATE</td>
+                                <td style="padding: 6px; font-size: 14pt; font-weight: bold; color: #000; vertical-align: top;">${po.date}</td>
+                            </tr>
+                            <!-- Row 3: PO NO | (empty) | COLOR | (value) -->
+                            <tr>
+                                <td style="padding: 6px; font-size: 11pt; font-weight: bold; color: #333; vertical-align: top;">PO NO</td>
+                                <td style="padding: 6px; font-size: 14pt; font-weight: bold; color: #000; vertical-align: top;">${po.poNumber}</td>
+                                <td style="padding: 6px; font-size: 11pt; font-weight: bold; color: #333; vertical-align: top;">QTY</td>
+                                <td style="padding: 6px; font-size: 14pt; font-weight: bold; color: #000; vertical-align: top;">${totalQty}</td>
+                            </tr>
+                            <!-- Row 4: (empty) | (empty) | COLOR | (value) -->
+                            <tr>
+                                <td style="padding: 6px;"></td>
+                                <td style="padding: 6px;"></td>
+                                <td style="padding: 6px; font-size: 11pt; font-weight: bold; color: #333; vertical-align: top;">COLOR</td>
+                                <td style="padding: 6px; font-size: 14pt; font-weight: bold; color: #000; vertical-align: top;">${app.headerData.color}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <table class="slip-matrix">
+                    <table class="slip-matrix" style="table-layout: fixed;">
+                        <colgroup>
+                            <col style="width: 100px;">
+                            ${this.generateNumberSequence(sizes.length).map(() => `<col style="width: auto;">`).join('')}
+                            <col style="width: 100px;">
+                        </colgroup>
                         <tbody>
                             <tr>
-                                <td style="font-weight: bold; background: #f0f0f0;">Invoice SNo</td>
+                                <td style="font-weight: bold; background: #f0f0f0; white-space: nowrap;">Inv SNo</td>
                                 ${this.generateNumberSequence(sizes.length).map(num => 
                                     `<td style="text-align: center; font-weight: bold;">${num}</td>`
                                 ).join('')}
-                                <td style="font-weight: bold; background: #f0f0f0;">TOTAL QTY</td>
+                                <td style="font-weight: bold; background: #f0f0f0; white-space: nowrap;">Total</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: bold; background: #f0f0f0;">FCID</td>
                                 ${sizes.map(size => {
                                     const fcid = app.getFCIDForSize(po, size);
-                                    return `<td style="font-weight: bold; text-align: center;">${fcid}</td>`;
+                                    return `<td style="font-size: 10pt !important; font-weight: bold; text-align: center;">${fcid}</td>`;
                                 }).join('')}
                                 <td rowspan="2" style="font-weight: bold; background: #f0f0f0; text-align: center;">${totalQty}</td>
                             </tr>
                             <tr>
-                                <td style="font-weight: bold; background: #f0f0f0;">Size Style Code</td>
+                                <td style="font-weight: bold; background: #f0f0f0;">Size</td>
                                 ${sizes.map(size => 
                                     `<td style="font-weight: bold; text-align: center;">${size}</td>`
                                 ).join('')}
@@ -355,8 +368,10 @@ class UIRenderer {
                         </tbody>
                     </table>
 
-                    <div class="carton-no-info" style="font-size: 1.4em; font-weight: bold; margin: 20px 0;">
-                        Carton No: ${cartonIdx + 1} of ${cartons.length}, Gross Weight: _________________________ KGS
+                    <div class="carton-no-info" style="display: flex; justify-content: space-between; align-items: center; font-weight: normal; margin: 10px 0; border: 2px solid #333; background-color: #FFFF99; padding: 10px; font-size: 14pt;">
+                        <span>CARTON NO</span>
+                        <span style="font-weight: bold; font-size: 22pt;"><span style="font-weight: bold; font-size: 22pt;">${cartonIdx + 1}</span> OF <span style="font-weight: bold; font-size: 22pt;">${cartons.length}</span></span>
+                        <span>GROSS WEIGHT:<span style="font-weight: bold; margin-left: 5px;">________________________KGS</span></span>
                     </div>
 
                     <div class="slip-addresses">
