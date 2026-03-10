@@ -587,11 +587,16 @@ textarea {
 }
 
 .slip-header-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px !important;
+    width: 100%;
+    border-collapse: collapse;
     margin-bottom: 10px !important;
     font-size: 11px !important;
+    table-layout: fixed;
+}
+
+.slip-header-info td {
+    padding: 6px !important;
+    vertical-align: top;
 }
 
 .slip-header-item {
@@ -976,6 +981,79 @@ textarea {
 }
 
 /* ============================================
+   SCREEN MEDIA STYLES (Display Preview)
+   ============================================ */
+
+@media screen {
+    .carton-slip {
+        /* border: 1px solid #ddd; */
+        background: white;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .slip-header-info {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-bottom: 10px;
+        font-family: Arial, Verdana, sans-serif;
+    }
+
+    .slip-header-info td {
+        padding: 6px;
+        vertical-align: top;
+        border: none;
+    }
+
+    /* Label columns (1st & 3rd) */
+    .slip-header-info td:nth-child(1),
+    .slip-header-info td:nth-child(3) {
+        font-size: 11pt;
+        font-weight: bold;
+        color: #333;
+        width: 20%;
+    }
+
+    /* Value columns (2nd & 4th) */
+    .slip-header-info td:nth-child(2),
+    .slip-header-info td:nth-child(4) {
+        font-size: 14pt;
+        font-weight: bold;
+        color: #000;
+        line-height: 1.3;
+    }
+
+    /* Column widths */
+    .slip-header-info td:nth-child(2) {
+        width: 45%;
+    }
+
+    .slip-header-info td:nth-child(3) {
+        width: 15%;
+    }
+
+    .slip-header-info td:nth-child(4) {
+        width: 20%;
+    }
+
+    /* Packing list preview styling */
+    .packing-list {
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Summary preview styling */
+    .summary-container {
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* ============================================
    PRINT STYLES
    ============================================ */
 
@@ -1151,7 +1229,9 @@ textarea {
     .slip-title,
     .packing-list-title {
         page-break-after: avoid;
-        font-size: 16px !important;
+        font-family: Calibri, sans-serif;
+        font-size: 22pt !important;
+        font-weight: bold;
         margin-bottom: 8px !important;
         padding-bottom: 5px !important;
     }
@@ -1160,31 +1240,89 @@ textarea {
     .packing-list-table,
     .summary-table {
         page-break-inside: avoid;
-        font-size: 10px !important;
+        font-family: Calibri, sans-serif;
+        font-size: 14pt !important;
     }
 
     .slip-matrix td {
         padding: 6px !important;
         height: auto !important;
+        font-family: Calibri, sans-serif;
+        font-size: 14pt !important;
     }
 
+    /* MATRIX HEADER TABLE (NEW DESIGN) */
     .slip-header-info {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr 1fr 1fr !important;
-        gap: 8px !important;
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
         margin-bottom: 10px !important;
-        font-size: 11px !important;
+        font-family: Arial, Verdana, sans-serif !important;
+    }
+
+    .slip-header-info tbody {
+        display: table-row-group !important;
+    }
+
+    .slip-header-info tr {
+        display: table-row !important;
+        width: 100% !important;
+    }
+
+    .slip-header-info td {
+        display: table-cell !important;
+        padding: 6px !important;
+        vertical-align: top !important;
+        border: none !important;
+        font-size: 11pt !important;
+        font-weight: normal !important;
+    }
+
+    /* Label columns (1st & 3rd) - bold labels, light color */
+    .slip-header-info td:nth-child(1),
+    .slip-header-info td:nth-child(3) {
+        font-size: 11pt !important;
+        font-weight: bold !important;
+        color: #333 !important;
+        width: 20% !important;
+    }
+
+    /* Value columns (2nd & 4th) - bold values, black color */
+    .slip-header-info td:nth-child(2),
+    .slip-header-info td:nth-child(4) {
+        font-size: 14pt !important;
+        font-weight: bold !important;
+        color: #000 !important;
+        line-height: 1.3 !important;
+    }
+
+    /* Column widths */
+    .slip-header-info td:nth-child(2) {
+        width: 45% !important;
+    }
+
+    .slip-header-info td:nth-child(3) {
+        width: 15% !important;
+    }
+
+    .slip-header-info td:nth-child(4) {
+        width: 20% !important;
     }
 
     .slip-header-item {
         display: flex !important;
         flex-direction: column !important;
         visibility: visible !important;
+        font-weight: bold;
+        font-size: 13pt;
     }
 
     .slip-header-label {
-        font-weight: bold !important;
-        font-size: 10px !important;
+        font-family: Calibri, sans-serif;
+        font-weight: normal !important;
+        font-size: 14pt !important;
+        margin-bottom: 2px;
     }
 
     .slip-addresses {
@@ -1193,6 +1331,7 @@ textarea {
         page-break-inside: avoid;
         margin-top: 10px;
         gap: 8px;
+        font-size: 14pt !important;
     }
 
     .slip-address {
@@ -1201,20 +1340,25 @@ textarea {
         border: 1px solid #333 !important;
         padding: 6px !important;
         margin: 0 !important;
-        font-size: 12px !important;
+        font-family: Calibri, sans-serif;
+        font-size: 14pt !important;
+        line-height: 1.3;
     }
 
     .slip-address-label {
+        font-family: Calibri, sans-serif;
         font-weight: bold !important;
         margin-bottom: 4px !important;
-        font-size: 13px !important;
+        font-size: 14pt !important;
     }
 
     .carton-no-info {
         display: block !important;
         visibility: visible !important;
         page-break-inside: avoid;
-        font-size: 12px !important;
+        font-family: "Times New Roman", serif;
+        font-size: 16pt !important;
+        font-weight: bold;
         margin: 8px 0 !important;
         padding: 6px !important;
     }
