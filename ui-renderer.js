@@ -1076,9 +1076,9 @@ class UIRenderer {
         // Row 1: Style
         html += '<tr>';
         html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Style:</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%;">${app.headerData.style || '-'}</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 15%;"></td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%; text-align: center; vertical-align: middle;" rowspan="6">
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 20%;">${app.headerData.style || '-'}</td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 30%;"><span style="font-weight: bold;">Color:</span> ${app.headerData.color || '-'}</td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%; text-align: center; vertical-align: middle;" rowspan="9">
                     <div id="imageUploadArea" class="image-upload-area" style="width: 100%; height: 100%; min-height: 150px; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                         <input type="file" id="summaryImageInput" accept="image/*" style="display: none;">
                         <div id="imagePreview" class="image-preview" style="width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
@@ -1090,40 +1090,34 @@ class UIRenderer {
                 </td>`;
         html += '</tr>';
         
-        // Row 2: Color
-        html += '<tr>';
-        html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Color:</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%;">${app.headerData.color || '-'}</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 15%;"></td>`;
-        html += '</tr>';
-        
         // Row 3: Buyer
         html += '<tr>';
         html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Buyer:</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%;">${app.headerData.buyer || '-'}</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 15%;"></td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 20%;">${app.headerData.buyer || '-'}</td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 30%;"><span style="font-weight: bold;">MRP:</span> ${app.headerData.mrp || '-'}</td>`;
         html += '</tr>';
         
-        // Row 4: Brand
+        // Row 4: GPT Result
         html += '<tr>';
-        html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Brand:</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%;">${app.headerData.brand || '-'}</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 15%;"></td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">GPT Result:</td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 20%;"><input type="text" id="gptResultInput" class="summary-edit-input" value="${app.summaryDetails.gptResult || ''}" style="width: 95%; padding: 5px; border: 1px solid #ccc; border-radius: 3px;"></td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 30%;"><span style="font-weight: bold;">Failure Reason:</span> <input type="text" id="gptFailureReasonInput" class="summary-edit-input" value="${app.summaryDetails.gptFailureReason || ''}" style="width: 90%; padding: 5px; border: 1px solid #ccc; border-radius: 3px;"></td>`;
         html += '</tr>';
         
-        // Row 5: Season
-        html += '<tr>';
-        html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Season:</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%;">${app.headerData.season || '-'}</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 15%;"></td>`;
+        // Row 5: Sealer Sample/Digital Sample
+        html += '<tr style="vertical-align: top;">';
+        html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Sealer Sample/Digital Sample:</td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 20%;"><input type="text" id="sealerSampleInput" class="summary-edit-input" value="${app.summaryDetails.sealerSample || ''}" style="width: 98%; padding: 5px; border: 1px solid #ccc; border-radius: 3px;"></td>`;
+        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 30%;"><span style="font-weight: bold;">Notes:</span><br><textarea id="notesInput" class="summary-edit-input" style="width: 98%; height: 60px; padding: 5px; border: 1px solid #ccc; border-radius: 3px; margin-top: 5px; resize: vertical; font-family: Arial, sans-serif; font-size: 11px;">${app.summaryDetails.notes || ''}</textarea></td>`;
         html += '</tr>';
         
-        // Row 6: Date
-        html += '<tr>';
-        html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Date:</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%;">${app.headerData.date || '-'}</td>`;
-        html += `<td style="border: 1px solid #ddd; padding: 10px; width: 15%;"></td>`;
-        html += '</tr>';
+        // // Row 5: Season
+        // html += '<tr>';
+        // html += `<td style="border: 1px solid #ddd; padding: 10px; font-weight: bold; width: 15%;">Season:</td>`;
+        // html += `<td style="border: 1px solid #ddd; padding: 10px; width: 35%;">${app.headerData.season || '-'}</td>`;
+        // html += `<td style="border: 1px solid #ddd; padding: 10px; width: 15%;"></td>`;
+        // html += '</tr>';
+        
         html += '</tr>';
         
         html += '</table>';
@@ -1132,6 +1126,19 @@ class UIRenderer {
         html += '</div>';
 
         container.innerHTML = html;
+
+        // Attach event listeners for editable fields
+        document.querySelectorAll('.summary-edit-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const summaryData = {
+                    gptResult: document.getElementById('gptResultInput')?.value || '',
+                    gptFailureReason: document.getElementById('gptFailureReasonInput')?.value || '',
+                    sealerSample: document.getElementById('sealerSampleInput')?.value || '',
+                    notes: document.getElementById('notesInput')?.value || ''
+                };
+                app.updateSummaryDetails(summaryData);
+            });
+        });
     }
 
     /**
