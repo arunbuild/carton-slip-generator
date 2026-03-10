@@ -212,9 +212,9 @@ function setDefaultHeaderValues() {
         app.headerData.date = today;
     }
     
-    // Set default brand to "Babyhug" if not already set
+    // Set default brand to "Brand" if not already set
     if (!app.headerData.brand) {
-        app.headerData.brand = 'Babyhug';
+        app.headerData.brand = 'Brand';
     }
     
     // Save the defaults
