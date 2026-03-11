@@ -1108,6 +1108,12 @@ textarea.summary-edit-input {
    ============================================ */
 
 @media print {
+    /* Force background colors and images to print */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
     body {
         background: white;
         margin: 0;
@@ -1241,6 +1247,62 @@ textarea.summary-edit-input {
         background-size: contain !important;
         background-repeat: no-repeat !important;
         background-position: center !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Force table backgrounds to print */
+    .summary-table th {
+        background-color: #2c3e50 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .summary-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .summary-table tbody tr.total-row {
+        background-color: #ecf0f1 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .summary-data-table thead tr {
+        background-color: #d0d0d0 !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .summary-data-table th {
+        background-color: #d0d0d0 !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .summary-data-table tbody tr:nth-child(even) {
+        background-color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Force carton slip backgrounds */
+    .slip-matrix th {
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Force packing list backgrounds */
+    .packing-list-table th {
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
     .image-upload-area.has-image .image-upload-prompt {
@@ -1505,9 +1567,15 @@ textarea.summary-edit-input {
 }
 
 /* ============================================
-   PRINT STYLES
+   PRINT STYLES - FORCE BACKGROUNDS
    ============================================ */
 @media print {
+    /* Force all backgrounds to print - IMPORTANT */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
     .no-print {
         display: none !important;
     }
