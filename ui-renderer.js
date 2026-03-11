@@ -932,12 +932,14 @@ class UIRenderer {
         html += '<tr style="background-color: #d0d0d0; color: #000; font-weight: bold;">';
         html += '<th rowspan="2" style="border: 1px solid #999; padding: 6px 4px;">S.No</th>';
         html += '<th rowspan="2" style="border: 1px solid #999; padding: 6px 4px;">PO Number</th>';
-        html += '<th colspan="2" style="border: 1px solid #999; text-align: center; padding: 6px 4px;">FCID / DESTINATION</th>';
+        html += '<th colspan="2" style="border: 1px solid #999; text-align: center; padding: 6px 4px;">FCID</th>';
         
-        // Size columns header
+
         sizesList.forEach(size => {
-            html += `<th style="border: 1px solid #999; text-align: center; padding: 6px 4px; font-weight: bold;">${size}</th>`;
+            const fcid = this.getFCIDForSize(pos[0], size);
+            html += `<th style="border: 1px solid #999; text-align: center; padding: 6px 4px; font-size: 10px;"><strong>${fcid || '-'}</strong></th>`;
         });
+        
         
         html += '<th rowspan="2" style="border: 1px solid #999; padding: 6px 4px;">Total</th>';
         html += '<th rowspan="2" style="border: 1px solid #999; padding: 6px 4px;">No of Box</th>';
@@ -945,12 +947,12 @@ class UIRenderer {
 
         // Row 3: FCID values and sizes
         html += '<tr style="background-color: #e8e8e8; color: #000; font-weight: bold;">';
-        html += '<th style="border: 1px solid #999; padding: 6px 4px;">FCID</th>';
+        html += '<th style="border: 1px solid #999; padding: 6px 4px;"></th>';
         html += '<th style="border: 1px solid #999; padding: 6px 4px;">Delivered To</th>';
         
+        // Size columns header
         sizesList.forEach(size => {
-            const fcid = this.getFCIDForSize(pos[0], size);
-            html += `<th style="border: 1px solid #999; text-align: center; padding: 6px 4px; font-size: 10px;"><strong>${fcid || '-'}</strong></th>`;
+            html += `<th style="border: 1px solid #999; text-align: center; padding: 6px 4px; font-weight: bold;">${size}</th>`;
         });
         
         html += '</tr>';
@@ -980,7 +982,7 @@ class UIRenderer {
             html += '<tr style="border: 1px solid #ddd; padding: 4px; font-size: 11px;">';
             html += `<td style="border: 1px solid #ddd; font-weight: bold; padding: 4px 2px;">${poIndex + 1}</td>`;
             html += `<td style="border: 1px solid #ddd; padding: 4px 2px;">${po.poNumber}</td>`;
-            html += `<td style="border: 1px solid #ddd; padding: 4px 2px; font-size: 10px;">${po.items[0]?.fcid || '-'}</td>`;
+            html += `<td style="border: 1px solid #ddd; padding: 4px 2px; font-size: 10px;"></td>`;
             html += `<td style="border: 1px solid #ddd; padding: 4px 2px;">${po.deliveredTo}</td>`;
             
             sizesList.forEach(size => {
