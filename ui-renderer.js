@@ -288,7 +288,7 @@ class UIRenderer {
             
             html += `
                 <div class="carton-slip">
-                    <div style="text-align: center; font-family: Arial, Verdana, sans-serif; font-size: 22pt; font-weight: bold; margin-bottom: 15px;">CARTON SLIP - GGN</div>
+                    <div style="text-align: center; font-family: Arial, Verdana, sans-serif; font-size: 22pt; font-weight: bold; margin-bottom: 15px;">CARTON SLIP - ${po.deliveredTo}</div>
 
                     <table class="slip-header-info" style="width: 100%; margin-bottom: 15px; border-collapse: collapse; table-layout: fixed; font-family: Arial, Verdana, sans-serif;">
                         <colgroup>
@@ -358,7 +358,7 @@ class UIRenderer {
                                 ).join('')}
                             </tr>
                             <tr>
-                                <td style="font-weight: bold; background: #f0f0f0;">Style</td>
+                                <td style="font-weight: bold; background: #f0f0f0;">Qty</td>
                                 ${sizes.map(size => {
                                     const qty = carton[size] || 0;
                                     return `<td style="font-weight: bold; text-align: center;">${qty > 0 ? qty : ''}</td>`;
@@ -447,9 +447,9 @@ class UIRenderer {
                     <thead>
                         <!-- Row 1: Column headers 1-N -->
                         <tr>
-                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%;" rowspan="3">CARTON<br>SERIAL NO</td>
-                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 10%;" rowspan="3">STYLE NO</td>
-                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%;">INV SERIAL<br>NO</td>
+                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%; background: #f0f0f0;" rowspan="3">CARTON<br>S.NO</td>
+                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 10%; background: #f0f0f0;" rowspan="3">STYLE NO</td>
+                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%; background: #f0f0f0;">INV S.NO</td>
         `;
 
         // Calculate width for each size column
@@ -457,16 +457,16 @@ class UIRenderer {
 
         // Row 1: Column numbers
         sizes.forEach((size, idx) => {
-            html += `<td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: ${sizeColWidth}%;">${idx + 1}</td>`;
+            html += `<td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: ${sizeColWidth}%; background: #f0f0f0;">${idx + 1}</td>`;
         });
 
         html += `
-                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 6%;" rowspan="3">TOTAL</td>
+                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 6%; background: #f0f0f0;" rowspan="3">TOTAL</td>
                         </tr>
                         
                         <!-- Row 2: FCID -->
                         <tr>
-                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%;">FCID</td>
+                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%; background: #f0f0f0;">FCID</td>
         `;
 
         sizes.forEach(size => {
@@ -479,7 +479,7 @@ class UIRenderer {
                         
                         <!-- Row 3: SIZE (Bold and Bigger) -->
                         <tr>
-                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%;">SIZE</td>
+                            <td style="border: 1px solid #000; padding: 5px; font-weight: bold; text-align: center; width: 8%; background: #f0f0f0;">SIZE</td>
         `;
 
         sizes.forEach(size => {
@@ -498,8 +498,7 @@ class UIRenderer {
             let cartonTotal = 0;
             html += `<tr>
                     <td style="border: 1px solid #000; padding: 5px; text-align: center; width: 8%; font-size: 11px;">${cartonIdx + 1}</td>
-                    <td style="border: 1px solid #000; padding: 5px; text-align: center; width: 10%; font-size: 11px;">${app.headerData.style}</td>
-                    <td style="border: 1px solid #000; padding: 5px; text-align: center; width: 8%;"></td>
+                    <td colspan="2" style="border: 1px solid #000; padding: 5px; text-align: left; font-size: 11px; font-weight: bold;">${app.headerData.style}</td>
             `;
 
             sizes.forEach(size => {
@@ -518,7 +517,7 @@ class UIRenderer {
         // Total row
         html += `
                         <tr style="font-weight: bold;">
-                            <td colspan="2" style="border: 1px solid #000; padding: 5px; text-align: right; font-size: 11px;">TOTAL</td>
+                            <td colspan="2" style="border: 1px solid #000; padding: 5px; text-align: right; font-size: 11px; background: #f0f0f0;">TOTAL</td>
                             <td style="border: 1px solid #000; padding: 5px; width: 8%;"></td>
         `;
 
@@ -732,9 +731,10 @@ class UIRenderer {
                 const po = app.getPO(poIndex);
                 document.getElementById('cartonPoInfo').textContent = po.poNumber;
                 
-                // Populate addresses
-                const toAddress = '\n' + po.deliveryAddress;
-                const fromAddress = app.headerData.vendor + '\n' + app.headerData.vendorAddress;
+                // Get saved addresses or use defaults
+                const savedAddresses = app.getCartonAddresses(poIndex);
+                const toAddress = savedAddresses.toAddress || ('\n' + po.deliveryAddress);
+                const fromAddress = savedAddresses.fromAddress || (app.headerData.vendor + '\n' + app.headerData.vendorAddress);
                 document.getElementById('toAddress').value = toAddress;
                 document.getElementById('fromAddress').value = fromAddress;
                 
@@ -897,6 +897,26 @@ class UIRenderer {
                 console.log('Both Carton Slips and Packing List have been generated. You can print them now.');
             }, 500);
         });
+
+        // Auto-save addresses when user modifies them
+        const toAddressField = document.getElementById('toAddress');
+        const fromAddressField = document.getElementById('fromAddress');
+        
+        if (toAddressField) {
+            toAddressField.addEventListener('change', (e) => {
+                const toAddress = e.target.value;
+                const fromAddress = document.getElementById('fromAddress').value;
+                app.setCartonAddresses(poIndex, toAddress, fromAddress);
+            });
+        }
+        
+        if (fromAddressField) {
+            fromAddressField.addEventListener('change', (e) => {
+                const toAddress = document.getElementById('toAddress').value;
+                const fromAddress = e.target.value;
+                app.setCartonAddresses(poIndex, toAddress, fromAddress);
+            });
+        }
     }
 
     /**
